@@ -1,0 +1,85 @@
+
+.container-list{
+    height: 100vh;
+
+    .container-list-contact  {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        padding: 30px;
+        border: none;
+        margin-top: 30px;
+
+        .img-profile {
+            img {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        .contact-name {
+            font-size: 24px;
+            margin-bottom: 0;
+        }
+
+        .contact-age {
+            font-size: 18;
+            opacity: 0.7;
+        }
+
+        .btn-edit {
+            width: 85px;
+        }
+
+        .btn-delete {
+            width: 85px;
+        }
+
+    }
+
+    .container-list-contact:hover {
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+
+}
+
+// Modal
+
+.modal {
+    .modal-update {
+        .modal-content {
+            padding: 24px;
+
+            .modal-header {
+                border-bottom:none ;
+                background-color: transparent;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+                .card-update-contact-us {
+                    border: none;
+    
+                    form {
+                        .form-group {
+                            margin-top: 10px;
+                            // label {
+    
+                            // }
+    
+                            // input {
+    
+                            // }
+                        }
+
+                        .group-button {
+                            .btn-cancel {
+                                margin-right: 20px;
+                            }
+                        }
+                    }
+                }
+            
+        }
+    }
+}

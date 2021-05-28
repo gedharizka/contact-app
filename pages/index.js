@@ -1,8 +1,67 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import { Container, Button } from 'react-bootstrap';
+import {useState} from 'react'
+import * as Yup from 'yup'
+// import { Container, Button, Form } from 'react-bootstrap'
+import {useFormik} from 'formik'
+import axios from 'axios';
+import {Container,Alert, Col, Card,Row, Form, FormGroup, Label, Input, Button, FormText, FormFeedback} from 'reactstrap';
+
+
+
+const ContactSchema = Yup.object().shape({
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  age:Yup.number('insert with number').required(),
+  photo:Yup.string()
+  .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      'Enter correct url!'
+  )
+  .required('Enter correct url!')
+})
 
 export default function Home() {
+
+  const [validate, setValidate] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const formik = useFormik ({
+    initialValues :{
+      firstName :'',
+      lastName:'',
+      age:'',
+      photo:''
+    },
+
+    validationSchema : ContactSchema,
+    validateOnChange : validate,
+
+    onSubmit :(values)=>{
+      const {firstName, lastName, age, photo} = values
+
+
+      axios.post(`https://simple-contact-crud.herokuapp.com/contact`,{
+        firstName,
+        lastName,
+        age,
+        photo
+      })
+      .then((res)=>{
+        console.log(res)
+        if (res.status === 201) {
+          setSuccess(true)
+          setTimeout(()=>{
+            setSuccess(false)
+            window.location='/list-contact'
+          },3000);
+        }
+      })
+      
+      // alert(JSON.stringify(values, null, 2))
+    }
+
+  })
+
   return (
     <div>
       <Head>
@@ -11,8 +70,70 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Container >
-        <h1>Contact APP</h1>
+      <Container className="container-contact">
+        <Row className="justify-content-center">
+          <Col md={6} sm={6}>
+            <Card className="card-contact-us mt-5">
+              <h1 className="text-center">Contact APP</h1>
+              {success && <Alert color="success">Contact added successfully</Alert>}
+              
+
+              <Form onSubmit={formik.handleSubmit}>
+                <FormGroup >
+                  <Label>First name</Label>
+                  <Input
+                    value={formik.values.firstName}
+                    onChange={formik.handleChange}
+                    invalid={formik.errors.firstName !== undefined}
+                    type="text"
+                    id="firstName"
+                    placeholder="Insert your first name" />
+                  {formik.errors.firstName && <FormFeedback type="invalid">{formik.errors.firstName}</FormFeedback>}
+                </FormGroup>
+
+                <FormGroup>
+                  <Label>Last name</Label>
+                  <Input
+                    value={formik.values.lastName}
+                    onChange={formik.handleChange}
+                    invalid={formik.errors.lastName !== undefined}
+                    type="text"
+                    id="lastName"
+                    placeholder="Insert your last name" />
+                  {formik.errors.lastName && <FormFeedback type="invalid">{formik.errors.lastName}</FormFeedback>}
+                </FormGroup>
+
+                <FormGroup >
+                  <Label>Age</Label>
+                  <Input
+                    value={formik.values.age}
+                    onChange={formik.handleChange}
+                    invalid={formik.errors.age !== undefined}
+                    type="text"
+                    id="age"
+                    placeholder="Insert your age" />
+                  {formik.errors.age && <FormFeedback type="invalid">{formik.errors.age}</FormFeedback>}
+                </FormGroup>
+
+                <FormGroup >
+                  <Label>photo</Label>
+                  <Input
+                    value={formik.values.photo}
+                    invalid={formik.errors.photo !== undefined}
+                    onChange={formik.handleChange}
+                    type="text"
+                    id="photo"
+                    placeholder="Insert your url image" />
+                  {formik.errors.photo && <FormFeedback type="invalid">{formik.errors.photo}</FormFeedback>}
+                </FormGroup>
+
+                <div>
+                  <Button className="btn-submit" color="primary" onClick={() => { if (!validate) { setValidate(true) } }} type="submit">Submit</Button>
+                </div>
+              </Form>
+            </Card>
+          </Col>
+        </Row>
       </Container>
       
     </div>
